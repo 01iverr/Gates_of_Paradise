@@ -1,0 +1,21 @@
+{
+    "1": "floor_single",
+    "2": "floor_sky_left",
+    "3": "floor_sky_mid_1",
+    "4": "floor_sky_mid_2",
+    "5": "floor_sky_mid_3",
+    "6": "floor_sky_right",
+    "7": "wall_left",
+    "8": "wall_right",
+    "9": "floor_top_line_left",
+    "10": "floor_top_line_mid_1",
+    "11": "floor_top_line_mid_2",
+    "12": "floor_top_line_mid_3",
+    "13": "floor_top_line_right",
+    "14": "floor_top_line_left",
+    "15": "floor_top_line_mid_1",
+    "16": "floor_top_line_mid_2",
+    "17": "floor_top_line_mid_3",
+    "18": "floor_top_line_right",
+    "0": "blank"
+}
