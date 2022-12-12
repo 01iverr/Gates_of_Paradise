@@ -1,14 +1,20 @@
 var tilewidth = 32;
 var spritewidth = 32; // number of pixel width in a tile sprite
-var canvaswidth = 27 * tilewidth;
+var canvaswidth = 20 * tilewidth;
 var canvasheight = 12 * tilewidth;
 
-var numberOfLevels = 1;
-var tileset;
-var tileset_row_blocks = 8;
-var tileset_col_blocks = 3;
-var tile_info;
+var numberOfLevels = 6;
 var level_info;
+
+var tileset;
+var tileset_row_blocks = 6;
+var tileset_col_blocks = 4;
+var tile_info;
+
+var itemset;
+var itemset_row_blocks = 6;
+var itemset_col_blocks = 19;
+var item_info;
 
 var tiles;
 var floors;
@@ -22,12 +28,17 @@ var map_data;
 var item_data;
 var tempMap;
 
+var stage = 0;
+var changeStage = true;
+
 /**
  * Preload asset files.
  */
 function preload() {
-	tileset = loadImage('/assets/images/map tiles/tileset8-200.png');
+	tileset = loadImage('/assets/images/map tiles/tiles-6-4-200.png');
 	tile_info = loadJSON('/assets/images/map tiles/tileset.json');
+	itemset = loadImage('/assets/images/map tiles/items-6-19-200.png');
+	item_info = loadJSON('/assets/images/map tiles/itemset.json');
 	level_info = loadJSON('/assets/level-data.json');
 }
 
@@ -35,7 +46,13 @@ function preload() {
  * Set up game.
  */
 function setup() {
-	createCanvas(windowWidth, windowHeight);
+	// Put canvas in center of window
+	var cnv = createCanvas(canvaswidth, canvasheight);
+	var x = (windowWidth - width) / 2;
+	var y = (windowHeight - height) / 2;
+	cnv.position(x, y);
+
+	// Create Maps
 	createMaps();
 }
 
@@ -46,14 +63,19 @@ function createMaps() {
 	for (let i = 1; i <= numberOfLevels; i++) {
 		tempMap = new Map(level_info[`map_${i}`], level_info[`items_${i}`]);
 		tempMap.create();
-		maps[i] = tempMap;		
+		maps[i] = tempMap;
 	}
 }
 
 function draw() {
-	clear();
-	// TODO: add background image instead of plain color
-	fill(116, 185, 214);
-	rect(0, 0, canvaswidth, canvasheight);
+	background(0, 0, 0);
+
+	if (changeStage){
+		stage++;
+	}
+
+	gameMap = maps[stage];
+
+	gameMap.draw();
 }
 

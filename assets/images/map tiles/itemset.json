@@ -1,0 +1,35 @@
+{
+    "1":  "blank 1 1 n", 
+
+    "2":  "chest_1 1 1 y",
+    "3":  "chest_2 1 1 y",
+
+    "7":  "bed_1 2 3 y",
+    "9":  "bed_2 2 3 y",
+    "11": "bed_3 2 3 y",
+
+    "25": "suitcase_1 2 1 y",
+    "27": "suitcase_2 2 1 y",
+    "29": "suitcase_3 2 1 y",
+
+    "31": "book_1 2 1 y",
+    "33": "book_2 2 1 y",
+    "35": "book_3 2 1 y",
+
+    "37": "grass 3 2 n",
+    "40": "grass 1 1 n",
+    "41": "grass 1 1 n",
+    "42": "plant 1 2 y",
+    "46": "grass 1 1 n",
+    "47": "plant 1 1 y",
+    
+    "49": "bookself_blue 3 3 y",
+    "52": "bookself_yellow 3 3 y",
+    "67": "bookself_green 3 3 y",
+
+    "70": "desk_purple 2 3 y",
+
+    "85": "carpet_red_orange 5 3 n",
+
+    "103": "chair_purple 1 2 y"
+}
