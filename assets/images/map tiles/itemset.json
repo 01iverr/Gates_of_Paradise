@@ -4,6 +4,11 @@
     "2":  "chest_1 1 1 y",
     "3":  "chest_2 1 1 y",
 
+    "4":  "paper 1 1 y",
+
+    "5":  "key_1 1 1 y",
+    "6":  "key_2 1 1 y",
+
     "7":  "bed_1 2 3 y",
     "9":  "bed_2 2 3 y",
     "11": "bed_3 2 3 y",
@@ -26,10 +31,11 @@
     "49": "bookself_blue 3 3 y",
     "52": "bookself_yellow 3 3 y",
     "67": "bookself_green 3 3 y",
-
-    "70": "desk_purple 2 3 y",
+    "70": "bookself_purple 3 3 y",
 
     "85": "carpet_red_orange 5 3 n",
 
-    "103": "chair_purple 1 2 y"
+    "103": "chair_purple 1 2 y",
+
+    "115": "desk_purple 2 3 y"
 }

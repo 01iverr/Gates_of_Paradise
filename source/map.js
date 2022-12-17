@@ -18,12 +18,12 @@ class Map {
     /**
      * Draws the map's sprites by using drawSprites.
      */
-    draw(){
-        drawSprites(this.walls);
-        drawSprites(this.doors);
-        drawSprites(this.floors);
-        drawSprites(this.items);
-        drawSprites(this.decoration);
+    draw() {
+        this.walls.draw();
+        this.doors.draw();
+        this.floors.draw();
+        this.items.draw();
+        this.decoration.draw();
     }
 
     /**
@@ -52,14 +52,19 @@ class Map {
 			for (let r = 0; r < row; r++) {
 				
 				let index = this.map_data[c][r];
-				let tile = new Tile("tile", index, r*tilewidth+tilewidth/2, c*tilewidth+tilewidth/2, 1, 1);
+                let tile_data = tile_info[index].split(' ');
+                let width = tile_data[1];
+                let height = tile_data[2];
+				let tile = new Tile("tile", index, r*tilewidth+tilewidth/2, c*tilewidth+tilewidth/2, width, height);
 				
-				if (tile.name.startsWith("wall")){
-                	this.walls.add(tile.sprite);
-                } else if (tile.name.startsWith("door")){
-                    this.doors.add(tile.sprite);
-                } else if (tile.name.startsWith("floor")) {
-                    this.floors.add(tile.sprite);
+                if (tile.name != null) {
+                    if (tile.name.startsWith("wall")) {
+                        this.walls.add(tile.sprite);
+                    } else if (tile.name.startsWith("door")) {
+                        this.doors.add(tile.sprite);
+                    } else if (tile.name.startsWith("floor")) {
+                        this.floors.add(tile.sprite);
+                    }
                 }
 			}
 		}
