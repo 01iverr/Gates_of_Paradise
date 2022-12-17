@@ -2,7 +2,7 @@ var tilewidth = 32;
 var spritewidth = 32; // number of pixel width in a tile sprite
 var canvaswidth = 20 * tilewidth;
 var canvasheight = 12 * tilewidth;
-
+var playerone;
 // Map, each name corresponds to map number
 // (corresponds to numbers in level-data.json)
 const stage_names = [
@@ -29,6 +29,10 @@ var itemset_row_blocks = 6;
 var itemset_col_blocks = 25;
 var item_info;
 
+var playerset;
+var playerset_row_blocks = 6;
+var playerset_col_blocks = 6;
+
 var tiles;
 var floors;
 var walls;
@@ -53,6 +57,7 @@ function preload() {
 	itemset = loadImage('/assets/images/map tiles/items-'+itemset_row_blocks+'-'+itemset_col_blocks+'-200.png');
 	item_info = loadJSON('/assets/images/map tiles/itemset.json');
 	level_info = loadJSON('/assets/level-data.json');
+	playerset = loadImage('/assets/images/characters/ghost.png');
 }
 
 /**
@@ -64,7 +69,7 @@ function setup() {
 	var x = (windowWidth - width) / 2;
 	var y = (windowHeight - height) / 2;
 	cnv.position(x, y);
-
+	playerone=new Player(100, 300, 1);
 	// Create Maps
 	createMaps();
 }
@@ -84,11 +89,12 @@ function draw() {
 	background(0, 0, 0);
 
 	if (changeStage){
-		stage = 7; 
+		stage = 7;
 	}
 
 	gameMap = maps[stage];
 
 	gameMap.draw();
-}
+	playerone.draw();
 
+}
