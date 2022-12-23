@@ -5,16 +5,42 @@ var canvasheight = 12 * tilewidth;
 var playerone;
 // Map, each name corresponds to map number
 // (corresponds to numbers in level-data.json)
-const stage_names = [
-	{key: "orange", 		value: 1}, // orange room
-	{key: "red", 			value: 2}, // red room
-	{key: "purple", 		value: 3}, // purple room
-	{key: "blue", 			value: 4}, // blue room
-	{key: "green", 			value: 5}, // green room
-	{key: "yellow", 		value: 6}, // yellow room
-	{key: "gates_1", 		value: 7}, // first scene, with both gates
-	{key: "doors_corridor", value: 8}, // corridor with colored doors
-	{key: "gates_2",		value: 9}  // last scene, with both gates
+const stage_names = [{
+    key: "orange",
+    value: 1
+  }, // orange room
+  {
+    key: "red",
+    value: 2
+  }, // red room
+  {
+    key: "purple",
+    value: 3
+  }, // purple room
+  {
+    key: "blue",
+    value: 4
+  }, // blue room
+  {
+    key: "green",
+    value: 5
+  }, // green room
+  {
+    key: "yellow",
+    value: 6
+  }, // yellow room
+  {
+    key: "gates_1",
+    value: 7
+  }, // first scene, with both gates
+  {
+    key: "doors_corridor",
+    value: 8
+  }, // corridor with colored doors
+  {
+    key: "gates_2",
+    value: 9
+  } // last scene, with both gates
 ];
 var numberOfLevels = stage_names.length;
 var level_info;
@@ -52,49 +78,88 @@ var changeStage = true;
  * Preload asset files.
  */
 function preload() {
-	tileset = loadImage('/assets/images/map tiles/tiles-'+tileset_row_blocks+'-'+tileset_col_blocks+'-200.png');
-	tile_info = loadJSON('/assets/images/map tiles/tileset.json');
-	itemset = loadImage('/assets/images/map tiles/items-'+itemset_row_blocks+'-'+itemset_col_blocks+'-200.png');
-	item_info = loadJSON('/assets/images/map tiles/itemset.json');
-	level_info = loadJSON('/assets/level-data.json');
-	playerset = loadImage('/assets/images/characters/ghost.png');
+  tileset = loadImage('/assets/images/map tiles/tiles-' + tileset_row_blocks + '-' + tileset_col_blocks + '-200.png');
+  tile_info = loadJSON('/assets/images/map tiles/tileset.json');
+  itemset = loadImage('/assets/images/map tiles/items-' + itemset_row_blocks + '-' + itemset_col_blocks + '-200.png');
+  item_info = loadJSON('/assets/images/map tiles/itemset.json');
+  level_info = loadJSON('/assets/level-data.json');
+  playerset = loadImage('/assets/images/characters/ghost.png');
 }
 
 /**
  * Set up game.
  */
 function setup() {
-	// Put canvas in center of window
-	var cnv = createCanvas(canvaswidth, canvasheight);
-	var x = (windowWidth - width) / 2;
-	var y = (windowHeight - height) / 2;
-	cnv.position(x, y);
-	playerone=new Player(100, 300, 1);
-	// Create Maps
-	createMaps();
+  // Put canvas in center of window
+  var cnv = createCanvas(canvaswidth, canvasheight);
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  cnv.position(x, y);
+  playerone = new Player(100, 300, 1);
+  // Create Maps
+  createMaps();
 }
 
 /**
  * Create each map based on asset files.
  */
 function createMaps() {
-	for (let i = 1; i <= numberOfLevels; i++) {
-		tempMap = new Map(level_info[`map_${i}`], level_info[`items_${i}`]);
-		tempMap.create();
-		maps[i] = tempMap;
-	}
+  for (let i = 1; i <= numberOfLevels; i++) {
+    tempMap = new Map(level_info[`map_${i}`], level_info[`items_${i}`]);
+    tempMap.create();
+    maps[i] = tempMap;
+  }
 }
 
 function draw() {
-	background(0, 0, 0);
+  background(0, 0, 0);
 
-	if (changeStage){
-		stage = 7;
+  if (changeStage) {
+    stage = 7;
+  }
+
+  gameMap = maps[stage];
+  gameMap.draw();
+  playerone.draw();
+	playerone.update();
+}
+
+
+function keyPressed() {
+	if (key == 'a') {
+		playerone.movingLeft=true;
+		playerone.update();
+		playerone.draw();
 	}
+	if (key == 'w') {
+    playerone.movingUp=true;
+		playerone.update();
+		playerone.draw();
+  }
+  if (key == 'd') {
+    playerone.movingRight=true;
+		playerone.update();
+		playerone.draw();
+  }
+	if(key == 's') {
+    playerone.movingDown=true;
+		playerone.update();
+		playerone.draw();
+  }
+}
 
-	gameMap = maps[stage];
-
-	gameMap.draw();
-	playerone.draw();
-
+function keyReleased() {
+	if(key == 'a'){
+    playerone.movingLeft=false;
+		console.log("bghka");
+  }
+  if (key == 'w') {
+    playerone.movingUp=false;
+  }
+  if (key == 'd')  {
+    playerone.movingRight=false;
+  }
+	if (key == 's') {
+		playerone.movingDown=false;
+	}
 }
