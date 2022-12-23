@@ -1,41 +1,43 @@
 {
-    "1":  "blank 1 1 n", 
+    "1":  "blank0 1 1 n", 
 
     "2":  "chest_1 1 1 y",
     "3":  "chest_2 1 1 y",
 
-    "4":  "paper 1 1 y",
+    "4":  "paper0 1 1 y",
 
-    "5":  "key_1 1 1 y",
-    "6":  "key_2 1 1 y",
+    "5":  "key1 1 1 y",
+    "6":  "key2 1 1 y",
 
-    "7":  "bed_1 2 3 y",
-    "9":  "bed_2 2 3 y",
-    "11": "bed_3 2 3 y",
+    "7":  "bed1 2 3 y",
+    "9":  "bed2 2 3 y",
+    "11": "bed3 2 3 y",
 
-    "25": "suitcase_1 2 1 y",
-    "27": "suitcase_2 2 1 y",
-    "29": "suitcase_3 2 1 y",
+    "25": "suitcase1 2 1 y",
+    "27": "suitcase2 2 1 y",
+    "29": "suitcase3 2 1 y",
 
-    "31": "book_1 2 1 y",
-    "33": "book_2 2 1 y",
-    "35": "book_3 2 1 y",
+    "31": "book_leaves1 2 1 y",
+    "33": "book_leaves2 2 1 y",
+    "35": "book_leaves3 2 1 y",
 
-    "37": "grass 3 2 n",
-    "40": "grass 1 1 n",
-    "41": "grass 1 1 n",
-    "42": "plant 1 2 y",
-    "46": "grass 1 1 n",
-    "47": "plant 1 1 y",
+    "37": "grass0 3 2 n",
+    "40": "grass0 1 1 n",
+    "41": "grass0 1 1 n",
+    "42": "plant0 1 2 y",
+    "46": "grass0 1 1 n",
+    "47": "plant0 1 1 y",
     
-    "49": "bookself_blue 3 3 y",
-    "52": "bookself_yellow 3 3 y",
-    "67": "bookself_green 3 3 y",
-    "70": "bookself_purple 3 3 y",
+    "49": "bookself_blue0 3 3 y",
+    "52": "bookself_yellow0 3 3 y",
+    "67": "bookself_green0 3 3 y",
+    "70": "bookself_purple0 3 3 y",
 
-    "85": "carpet_red_orange 5 3 n",
+    "85": "carpet_red_orange0 5 3 n",
 
-    "103": "chair_purple 1 2 y",
+    "103": "chair_purple1 1 2 y",
+    "105": "chair_purple2 2 2 y",
+    "107": "chair_purple3 2 1 y",
 
-    "115": "desk_purple 2 3 y"
+    "115": "desk_purple0 2 3 y"
 }
