@@ -4,55 +4,47 @@ class Player {
     this.x = x;
     this.y = y;
     this.index = index - 1
-    this.speed = 2.5;
+    this.speed = 3;
     this.width = 2;
     this.height = 2;
     this.sprite = createSprite(this.x, this.y, 2 * tilewidth, 2 * tilewidth);
-    this.movingRight = false;
-    this.movingLeft = false;
-    this.movingUp = false;
-    this.movingDown = false;
+    this.sprite.collider = 'static';
+    this.coins=0;
+
   }
 
-update(){
-  // update moving character
-  if (this.movingRight) {
+  update() {
+    if  (kb.pressing(UP_ARROW)) {
+      this.sprite.position.y -= this.speed;
+      // this.shadow.position.y -= this.speed;
+    }
+    if (kb.pressing(DOWN_ARROW)) {
+      this.sprite.position.y += this.speed;
+      // this.shadow.position.y += this.speed;
+    }
+    if (kb.pressing(LEFT_ARROW)) {
+      this.sprite.position.x -= this.speed;
+      // this.shadow.position.x-= this.speed;
+    }
+    if (kb.pressing(RIGHT_ARROW)) {
+      this.sprite.position.x += this.speed;
+      // this.shadow.position.x += this.speed;
+    }
+    if (this.sprite.overlap(gameMap.coins, this.getCoins)) {
+      this.coins += 1;
 
-    this.x += this.speed;
-    this.sprite.position.x=this.x;
-    console.log("this.x");
-    console.log(this.x);
-    console.log("sprite x");
-    console.log(this.sprite.position.x);
-    console.log("right");
-    this.draw();
+    }
   }
-  if (this.movingLeft) {
-    this.x -= this.speed;
-    this.sprite.position.x=this.x;
-    console.log("left");
-  }
-  if (this.movingUp) {
-  console.log("to y prin");
-  console.log(this.y);
-  this.y -= this.speed;
-  this.sprite.position.y=this.y;
-  console.log("update up");
-  console.log("to y einai");
-  console.log(this.y);
-  }
-  if (this.movingDown) {
-    this.y += this.speed;
-    this.sprite.position.y=this.y;
-    console.log("down");
-  }
-  console.log("idk");
-}
+
+  getCoins(player, coin){
+      coin.remove();
+    }
   draw() {
     console.log("sprite x meta einai ")
     console.log(this.sprite.position.x);
     console.log("sprite y meta einai ")
     console.log(this.sprite.position.y);
+    // this.shadow.draw();
     this.addImage();
     this.sprite.draw()
   }

@@ -105,7 +105,7 @@ function setup() {
  */
 function createMaps() {
   for (let i = 1; i <= numberOfLevels; i++) {
-    tempMap = new Map(level_info[`map_${i}`], level_info[`items_${i}`]);
+    tempMap = new GameMap(level_info[`map_${i}`], level_info[`items_${i}`]);
     tempMap.create();
     maps[i] = tempMap;
   }
@@ -122,44 +122,4 @@ function draw() {
   gameMap.draw();
   playerone.draw();
 	playerone.update();
-}
-
-
-function keyPressed() {
-	if (key == 'a') {
-		playerone.movingLeft=true;
-		playerone.update();
-		playerone.draw();
-	}
-	if (key == 'w') {
-    playerone.movingUp=true;
-		playerone.update();
-		playerone.draw();
-  }
-  if (key == 'd') {
-    playerone.movingRight=true;
-		playerone.update();
-		playerone.draw();
-  }
-	if(key == 's') {
-    playerone.movingDown=true;
-		playerone.update();
-		playerone.draw();
-  }
-}
-
-function keyReleased() {
-	if(key == 'a'){
-    playerone.movingLeft=false;
-		console.log("bghka");
-  }
-  if (key == 'w') {
-    playerone.movingUp=false;
-  }
-  if (key == 'd')  {
-    playerone.movingRight=false;
-  }
-	if (key == 's') {
-		playerone.movingDown=false;
-	}
 }
