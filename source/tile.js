@@ -21,7 +21,7 @@ class Tile {
 
         this.sprite = createSprite(this.x, this.y, width*tilewidth, height*tilewidth);
         this.sprite.collider = 'static';
-        if (this.type == "tile"){
+        if (this.type == "tile") {
             this.name = (tile_info[index].split(' '))[0];
             this.has_collissions = ((tile_info[index].split(' '))[3]) == "y" ? true : false;
         } else if (this.type == "item") {
@@ -33,6 +33,11 @@ class Tile {
         this.addCollisions();
         this.addAnimation();
         this.sprite.changeAnimation("first");
+
+        // FOR TESTING (to view some animations) // TODO: remove
+        if (this.name.startsWith("door") || this.name.startsWith("bed") || this.name.startsWith("suitcase") || this.name.startsWith("chest")){
+            this.sprite.changeAnimation("animation");
+        }
     }
 
     /**
@@ -45,7 +50,7 @@ class Tile {
 
     /**
      * Gets image cut at index, based on object dimensions.
-     * @param {number} index 
+     * @param {number} index index used to cut image
      * @returns image
      */
     loadImage(index) {
@@ -110,44 +115,83 @@ class Tile {
      * Add animation frames to item.
      */
     addAnimation() {
+        // Get grame indexes
+        let indexList = this.getAnimationIndexes();
 
-        // Get frames from image assets
-        let frames = {};
-        let index = this.index;
-        let item_title = this.name.substring(0, this.name.length-1);
-        let stop = false;
-
-        while (!stop) {
-
-            // Add frame to list
-            let img = this.loadImage(index);
-            frames[index+1] = img; //index+1 so it corresponds to number in json file
-
-            index = +index + +this.width;
-
-            // Find if there are more frames
-            let item_name;
-            if (this.type == "tile"){
-                if (index >= Object.keys(tile_info).length)        { break; }    // If End Of Array reached
-                if (!(tile_info.hasOwnProperty(index.toString()))) { continue; } // Must continue to find item if index doesn't exist in json
-                item_name = (tile_info[index].split(' '))[0];
-            } else if (this.type == "item") {
-                if (index >= Object.keys(item_info).length)        { break; }    // If End Of Array reached
-                if (!(item_info.hasOwnProperty(index.toString()))) { continue; } // Must continue to find item if index doesn't exist in json
-                item_name = (item_info[index].split(' '))[0];
-            }
-
-            if (!item_name.startsWith(item_title)) { // There are no more frames
-                stop = true;
-            }
-
+        // Get image for each frame
+        let frames = [];
+        for (let i=0; i<indexList.length; i++){
+            frames[i] = this.loadImage(indexList[i]);
         }
-        // if (!item_title.startsWith("blan") && !item_title.startsWith("floor") && !item_title.startsWith("wall")){
-        //     console.log("frames : ", frames); // TODO: remove
-        // }
-        // this.sprite.addImage("last", frames[0], tilewidth); //FIXME
 
-        // Load animation
-        // this.sprite.addAnimation("animate", frames[0], frames[1], frames[2]); // FIXME
+        // Add animation
+        switch(frames.length) {
+            case 3:
+                this.sprite.addAnimation("animation", 
+                    frames[0], frames[1], frames[2]).noLoop();
+                break;
+            case 2:
+                this.sprite.addAnimation("animation", 
+                    frames[0], frames[1]).noLoop();
+                break;
+            case 1:
+                break;
+            default:
+                console.log("[ERROR] Item \"",this.name,"\" has too many frames.");
+        }
     }
+
+    /**
+     * Find indexes for each of the animation frames of item.
+     * The indexes correspond to codes in corresponing .json file (tileset.json | itemset.json).
+     * @returns array with frame indexes
+     */
+    getAnimationIndexes() {
+        let indexList = [];
+        let index = this.index + 1;
+        let i = 0;
+
+        while (true) {
+            indexList[i] = index-1;
+
+            if (this.name.startsWith("wall")) {
+                break; // walls dont have animation
+            }
+            
+            let next; // next index to check
+            if (this.name.startsWith("door")) { // door frames are not placed next to each other
+                index = +index + ((+tileset_row_blocks) * 2);
+                next = +index + ((+tileset_row_blocks) * 2);
+            } else {
+                index = +index + +this.width;
+                next = +index + +this.width;
+            }
+
+            if (this.type == "tile") {
+                if (!tile_info.hasOwnProperty(next.toString())) { // key doesn't exit in tileset.json
+                    indexList[i+1] = index-1;
+                    break;
+                }
+                let next_item = (tile_info[next].split(' '))[0].slice(0, -1); // name of next item without number at end
+                if (!this.name.startsWith(next_item)) { // this is the last frame 
+                    indexList[i+1] = index-1;
+                    break;
+                }
+            } else if (this.type == "item") {
+                if (!item_info.hasOwnProperty(next.toString())) { // key doesn't exit in itemset.json
+                    indexList[i+1] = index-1;
+                    break;
+                }
+                let next_item = (item_info[next].split(' '))[0].slice(0, -1); // name of next item without number at end
+                if (!this.name.startsWith(next_item)) { // this is the last frame
+                    indexList[i+1] = index-1;
+                    break;
+                }
+            }
+            i++;
+        }
+
+        return indexList;
+    }
+
 }
