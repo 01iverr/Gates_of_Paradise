@@ -1,10 +1,12 @@
 class GameMap {
   /**
    * @constructor
+   * @param {number} name map name
    * @param {Array<Array<number>>} map_data 2D Array of numbers containing tile info
    * @param {Array<Array<number>>} item_data 2D Array of numbers containing item info
    */
-  constructor(map_data, item_data) {
+  constructor(name, map_data, item_data) {
+    this.name = name;
     this.map_data = map_data;
     this.item_data = item_data;
 
@@ -14,6 +16,8 @@ class GameMap {
     this.items; // interactive items
     this.decoration; // non-interactive items
     this.coins = new Group();
+
+    interract_blocks[this.name] = [];
   }
 
   /**
@@ -47,9 +51,6 @@ class GameMap {
 
     let col = this.map_data.length;
     let row = this.map_data[0].length;
-    // console.log("row = ",row) // TODO: remove (print)
-    // console.log("col = ",col)
-    // console.log("map_data ", map_data[col-1])
     for (let c = 0; c < col; c++) {
       for (let r = 0; r < row; r++) {
 
@@ -58,6 +59,9 @@ class GameMap {
         let width = tile_data[1];
         let height = tile_data[2];
         let tile = new Tile("tile", index, r * tilewidth + tilewidth / 2, c * tilewidth + tilewidth / 2, width, height);
+        if (tile.has_collissions){
+            interract_blocks[this.name].push(tile);
+        }
 
         if (tile.name != null) {
           if (tile.name.startsWith("wall")) {
@@ -66,9 +70,7 @@ class GameMap {
             this.doors.add(tile.sprite);
           } else if (tile.name.startsWith("floor")) {
             this.floors.add(tile.sprite);
-          } else if (tile.name.startsWith("coins")) {
-            this.coins.add(item.sprite);
-          }
+          } 
         }
       }
     }
@@ -93,6 +95,13 @@ class GameMap {
         let height = item_data[2];
         let isInteractive = item_data[3];
         let tile = new Tile("item", index, r * tilewidth + tilewidth / 2, c * tilewidth + tilewidth / 2, width, height);
+        if (tile.has_collissions){
+            interract_blocks[this.name].push(tile);
+        }
+
+        if (tile.name.startsWith("coin")) {
+            this.coins.add(tile.sprite);
+        }
 
         switch (isInteractive) {
           case 'y': // interractive item

@@ -74,6 +74,8 @@ var tempMap;
 var stage = 0;
 var changeStage = true;
 
+var interract_blocks = []; // interractive blocks for each map
+
 /**
  * Preload asset files.
  */
@@ -90,6 +92,7 @@ function preload() {
  * Set up game.
  */
 function setup() {
+  frameRate(100);
   // Put canvas in center of window
   var cnv = createCanvas(canvaswidth, canvasheight);
   var x = (windowWidth - width) / 2;
@@ -105,7 +108,7 @@ function setup() {
  */
 function createMaps() {
   for (let i = 1; i <= numberOfLevels; i++) {
-    tempMap = new GameMap(level_info[`map_${i}`], level_info[`items_${i}`]);
+    tempMap = new GameMap(i, level_info[`map_${i}`], level_info[`items_${i}`]);
     tempMap.create();
     maps[i] = tempMap;
   }
@@ -115,11 +118,11 @@ function draw() {
   background(0, 0, 0);
 
   if (changeStage) {
-    stage = 7;
+    stage = 5;
   }
 
   gameMap = maps[stage];
   gameMap.draw();
   playerone.draw();
-	playerone.update();
+  playerone.update();
 }

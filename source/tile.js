@@ -16,14 +16,14 @@ class Tile {
         this.height = height;
 
         // Fix y coordinate, to align big items with other blocks
-        this.x = x;
-        this.y = ( (width==1 & height==1) ? y : (y + (tilewidth/2)*(height-1)) );
+        this.x = ( (width==1 & height==1) ? x : (x + (tilewidth/2)*(this.width-1)) );
+        this.y = ( (width==1 & height==1) ? y : (y + (tilewidth/2)*(this.height-1)) );
 
         this.sprite = createSprite(this.x, this.y, width*tilewidth, height*tilewidth);
         this.sprite.collider = 'static';
         if (this.type == "tile") {
             this.name = (tile_info[index].split(' '))[0];
-            this.has_collissions = ((tile_info[index].split(' '))[3]) == "y" ? true : false;
+            this.has_collissions = (this.name.startsWith("wall") || this.name.startsWith("door")) ? true : false;
         } else if (this.type == "item") {
             this.name = (item_info[index].split(' '))[0];
             this.has_collissions = ((item_info[index].split(' '))[3]) == "y" ? true : false;
@@ -35,7 +35,7 @@ class Tile {
         this.sprite.changeAnimation("first");
 
         // FOR TESTING (to view some animations) // TODO: remove
-        if (this.name.startsWith("door") || this.name.startsWith("bed") || this.name.startsWith("suitcase") || this.name.startsWith("chest")){
+        if ((this.name.startsWith("door") && !this.name.startsWith("door_paradise") && !this.name.startsWith("door_hell")) || this.name.startsWith("bed") || this.name.startsWith("suitcase") || this.name.startsWith("chest")){
             this.sprite.changeAnimation("animation");
         }
     }
@@ -74,40 +74,27 @@ class Tile {
         if (!this.has_collissions){
             return;
         }
-        if (width == 1 && height == 1){
-            this.collide_bottom = this.sprite.y + tileheight;
-            this.collide_top    = this.sprite.y;
+
+        if (this.height == 1 /*|| (this.name.startsWith("plant") && this.height == 2)*/){
+            this.collide_top = this.sprite.y + tilewidth/2;
+            this.collide_bottom = this.sprite.y + (tilewidth * 3/2);
         } else {
-            this.collide_top    = this.sprite.y + tilewidth;
-            this.collide_bottom = this.sprite.y + this.height * tilewidth;
+            this.collide_top = this.sprite.y - (tilewidth/(this.height*0.5))*(this.height-1);
+            this.collide_bottom = this.collide_top + this.height * tilewidth;
         }
-        this.collide_left  = this.sprite.x - tilewidth;
-        this.collide_right = this.sprite.x + tilewidth;
+
+        if (this.width == 1) {
+            this.collide_left   = this.sprite.x - tilewidth * 3/4;
+            this.collide_right  = this.sprite.x + tilewidth * 3/4;
+        } else {
+            this.collide_left   = this.sprite.x - tilewidth * this.width/2;
+            this.collide_right  = this.sprite.x + tilewidth * this.width/2;
+        }
+        
+        
 
         if (this.name.startsWith("book_leaves")){ // Player shouldn't collide with leaves, obly with book
             this.collide_left = this.collide_left + tilewidth;
-        }
-    }
-
-    /**
-     * Check if block collides with other block.
-     * @param {Tile} tile2 tile to check collision with
-     * @returns true if collission happens, false if not
-     */
-    checkCollision(tile2) {
-        // If one or both items are non-interactive (floor, grass,etc)
-        if (!this.has_collissions || !tile2.has_collissions) {
-            return false;
-        }
-
-        // If both have collision interaction
-        if (this.collide_top   > tile2.bottom 
-        || this.collide_bottom < tile2.top 
-        || this.collide_right  < tile2.left
-        || this.collide_left   > tile2.right) {
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -154,7 +141,7 @@ class Tile {
         while (true) {
             indexList[i] = index-1;
 
-            if (this.name.startsWith("wall")) {
+            if (this.name.startsWith("wall") || this.name.startsWith("door_paradise") || this.name.startsWith("door_hell")) {
                 break; // walls dont have animation
             }
             

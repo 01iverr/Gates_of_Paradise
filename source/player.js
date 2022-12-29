@@ -4,7 +4,7 @@ class Player {
     this.x = x;
     this.y = y;
     this.index = index - 1
-    this.speed = 3;
+    this.speed = 8;
     this.width = 2;
     this.height = 2;
     this.sprite = createSprite(this.x, this.y, 2 * tilewidth, 2 * tilewidth);
@@ -15,6 +15,8 @@ class Player {
   }
 
   update() {
+    let oldy = this.sprite.position.y;
+    let oldx = this.sprite.position.x;
     if  (kb.pressing(UP_ARROW)) {
       this.sprite.position.y -= this.speed;
       // this.shadow.position.y -= this.speed;
@@ -33,9 +35,25 @@ class Player {
       this.changeAnimation("walking_right");
       // this.shadow.position.x += this.speed;
     }
-    if (this.sprite.overlap(gameMap.coins, this.getCoins)) {
-      this.coins += 1;
 
+    // Check collisions
+    for (let i=0; i<interract_blocks[stage].length; i++) {
+        if (this.checkCollision(interract_blocks[stage][i])) { 
+            console.log("[Collision] Player -",interract_blocks[stage][i].name);
+            if (interract_blocks[stage][i].name.startsWith("coin")) { // coin
+                // Add coin
+                this.coins += 1;
+                // Remove coin from collision detectable items
+                interract_blocks[stage].splice(i, 1);
+                // TODO: not draw coin
+                // IDEA: change animation
+                
+                // console.log(this.coins); // TODO: remove
+            } else { // not coin
+                this.sprite.position.y = oldy;
+                this.sprite.position.x = oldx;
+            }
+        }
     }
   }
 
@@ -64,6 +82,57 @@ class Player {
         console.log("[ERROR] Invalid value given for player animation:", animation);
     }
   }
+
+    /**
+     * Check if player collides with item.
+     * @param {Tile} tile tile to check collision with
+     * @returns true if collission happens, false if not
+     */
+    checkCollision(tile) {
+        // If item is non-interactive (floor, grass,etc)
+        if (!tile.has_collissions) {
+            return false;
+        }
+        let top = this.getTop();
+        let bottom = this.getBottom();
+        let left = this.getLeft();
+        let right = this.getRight();
+
+        let top_bottom = false;
+        if (top < tile.collide_bottom && top > tile.collide_top ||
+            bottom > tile.collide_top && bottom < tile.collide_bottom) {
+                top_bottom = true;
+        }
+
+        let left_right = false;
+        if (left < tile.collide_right && left > tile.collide_left ||
+            right > tile.collide_left && right < tile.collide_right) {
+                left_right = true;
+        }
+        
+
+        if (top_bottom && left_right) {
+            return true;
+        }
+        return false;
+
+    }
+
+    getTop() {
+        return +this.sprite.y + tilewidth *4/6;
+    }
+
+    getBottom() {
+        return +this.sprite.y + this.height * tilewidth;
+    }
+
+    getLeft() {
+        return +this.sprite.x - tilewidth/2;
+    }
+
+    getRight() {
+        return +this.sprite.x + tilewidth/2;
+    }
 
   /**
    * Add animation frames to item.
