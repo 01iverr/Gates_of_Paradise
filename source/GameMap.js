@@ -1,3 +1,4 @@
+let coinsBoolean=true;
 class GameMap {
   /**
    * @constructor
@@ -9,14 +10,13 @@ class GameMap {
     this.name = name;
     this.map_data = map_data;
     this.item_data = item_data;
-
     this.walls;
     this.doors;
     this.floors;
     this.items; // interactive items
     this.decoration; // non-interactive items
     this.coins = new Group();
-
+    coinsBoolean=true;
     interract_blocks[this.name] = [];
   }
 
@@ -28,7 +28,11 @@ class GameMap {
     this.doors.draw();
     this.floors.draw();
     this.items.draw();
-    this.coins.draw();
+    if (coinsBoolean==true){ //every time that we change map this var has to be true!
+      this.coins.draw();
+    }else{
+        this.coins.remove();
+    }
     this.decoration.draw();
   }
 
@@ -70,7 +74,7 @@ class GameMap {
             this.doors.add(tile.sprite);
           } else if (tile.name.startsWith("floor")) {
             this.floors.add(tile.sprite);
-          } 
+          }
         }
       }
     }

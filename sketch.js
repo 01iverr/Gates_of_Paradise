@@ -86,6 +86,7 @@ function preload() {
   item_info = loadJSON('/assets/images/map tiles/itemset.json');
   level_info = loadJSON('/assets/level-data.json');
   playerset = loadImage('/assets/images/characters/ghost.png');
+  dialogs_info = loadJSON('/assets/dialogsset.json');
 }
 
 /**
@@ -116,7 +117,6 @@ function createMaps() {
 
 function draw() {
   background(0, 0, 0);
-
   if (changeStage) {
     stage = 5;
   }

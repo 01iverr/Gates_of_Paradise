@@ -17,37 +17,46 @@ class Player {
   update() {
     let oldy = this.sprite.position.y;
     let oldx = this.sprite.position.x;
-    if  (kb.pressing(UP_ARROW)) {
+    //for slow walking
+    if  (kb.pressing("z")) {
+      this.speed =3;
+    }else{
+      this.speed = 8;
+    }
+    //for running
+    if  (kb.pressing("r")) {
+      this.speed =10;
+    }else{
+      this.speed = 8;
+    }
+    if  (kb.pressing(UP_ARROW)||kb.pressing("w")) {
       this.sprite.position.y -= this.speed;
-      // this.shadow.position.y -= this.speed;
     }
-    if (kb.pressing(DOWN_ARROW)) {
+    if (kb.pressing(DOWN_ARROW)||kb.pressing("s")) {
       this.sprite.position.y += this.speed;
-      // this.shadow.position.y += this.speed;
     }
-    if (kb.pressing(LEFT_ARROW)) {
+    if (kb.pressing(LEFT_ARROW)||kb.pressing("a")) {
       this.sprite.position.x -= this.speed;
       this.changeAnimation("walking_left");
-      // this.shadow.position.x-= this.speed;
     }
-    if (kb.pressing(RIGHT_ARROW)) {
+    if (kb.pressing(RIGHT_ARROW)||kb.pressing("d")) {
       this.sprite.position.x += this.speed;
       this.changeAnimation("walking_right");
-      // this.shadow.position.x += this.speed;
     }
 
     // Check collisions
     for (let i=0; i<interract_blocks[stage].length; i++) {
-        if (this.checkCollision(interract_blocks[stage][i])) { 
+        if (this.checkCollision(interract_blocks[stage][i])) {
             console.log("[Collision] Player -",interract_blocks[stage][i].name);
             if (interract_blocks[stage][i].name.startsWith("coin")) { // coin
                 // Add coin
                 this.coins += 1;
+                coinsBoolean=false;
                 // Remove coin from collision detectable items
                 interract_blocks[stage].splice(i, 1);
-                // TODO: not draw coin
                 // IDEA: change animation
-                
+
+
                 // console.log(this.coins); // TODO: remove
             } else { // not coin
                 this.sprite.position.y = oldy;
@@ -57,16 +66,13 @@ class Player {
     }
   }
 
-  getCoins(player, coin){
-      coin.remove();
-    }
+
+  takeallthecoins(){
+    this.coins=0;
+  }
+
   draw() {
-    // console.log("sprite x meta einai ")
-    // console.log(this.sprite.position.x);
-    // console.log("sprite y meta einai ")
-    // console.log(this.sprite.position.y);
-    // this.shadow.draw();
-    this.sprite.draw()
+    this.sprite.draw();
   }
 
   /**
@@ -109,7 +115,7 @@ class Player {
             right > tile.collide_left && right < tile.collide_right) {
                 left_right = true;
         }
-        
+
 
         if (top_bottom && left_right) {
             return true;
@@ -151,13 +157,13 @@ class Player {
     }
 
     // Add animation
-    this.sprite.addAnimation("walking_right", 
+    this.sprite.addAnimation("walking_right",
         frames[0][0], frames[0][1], frames[0][2]);
-    this.sprite.addAnimation("walking_left", 
+    this.sprite.addAnimation("walking_left",
         frames[1][0], frames[1][1], frames[1][2]);
-    this.sprite.addAnimation("pray", 
+    this.sprite.addAnimation("pray",
         frames[2][0], frames[2][1], frames[2][2]);
-    this.sprite.addAnimation("praying", 
+    this.sprite.addAnimation("praying",
         frames[3][0], frames[3][1], frames[3][2]);
   }
 
