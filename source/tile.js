@@ -78,9 +78,16 @@ class Tile {
         if (this.height == 1 /*|| (this.name.startsWith("plant") && this.height == 2)*/){
             this.collide_top = this.sprite.y + tilewidth/2;
             this.collide_bottom = this.sprite.y + (tilewidth * 3/2);
-        } else {
-            this.collide_top = this.sprite.y - (tilewidth/(this.height*0.5))*(this.height-1);
-            this.collide_bottom = this.collide_top + this.height * tilewidth;
+        } else if (this.height == 2) {
+            this.collide_top = this.sprite.y;
+            this.collide_bottom = this.collide_top + this.height * tilewidth * 2/3;
+        } else if (this.height == 3) {
+            this.collide_top = this.sprite.y - tilewidth * 0.375;
+            this.collide_bottom = this.collide_top + this.height * tilewidth * 2/3;
+        }
+
+        if (this.name.startsWith("chair_purple")){ // Player shouldn't collide with space above chair
+            this.collide_top = this.collide_top + tilewidth * 2/3;
         }
 
         if (this.width == 1) {

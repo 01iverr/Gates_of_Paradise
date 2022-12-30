@@ -52,7 +52,7 @@ var tile_info;
 
 var itemset;
 var itemset_row_blocks = 6;
-var itemset_col_blocks = 25;
+var itemset_col_blocks = 28;
 var item_info;
 
 var playerset;
