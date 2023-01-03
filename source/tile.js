@@ -60,9 +60,15 @@ class Tile {
             y = Math.trunc(index / tileset_row_blocks);
             img = tileset.get(x*spritewidth, y*spritewidth, spritewidth*this.width, spritewidth*this.height);
         } else if (this.type == "item") {
-            x = index % itemset_row_blocks;
-            y = Math.trunc(index / itemset_row_blocks);
-            img = itemset.get(x*spritewidth, y*spritewidth, spritewidth*this.width, spritewidth*this.height);
+            if (this.name == "devil") {
+                img = devil_img;
+            } else if (this.name == "speter") {
+                img = speter_img;
+            } else {
+                x = index % itemset_row_blocks;
+                y = Math.trunc(index / itemset_row_blocks);
+                img = itemset.get(x*spritewidth, y*spritewidth, spritewidth*this.width, spritewidth*this.height);
+            }
         }
         return img;
     }

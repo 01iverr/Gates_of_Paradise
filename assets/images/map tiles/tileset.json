@@ -34,8 +34,10 @@
     "41": "door_green3 1 2",
     "42": "door_yellow3 1 2",
 
-    "49": "floor_lilac0 1 1",
-    "55": "wall_lilac0 1 1",
+    "49": "floor_main0 1 1",
+    "55": "wall_main0 1 1",
+
+    "61": "blank0 1 1",
 
     "50": "door_paradise0 5 5",
     "80": "door_hell0 5 5"
