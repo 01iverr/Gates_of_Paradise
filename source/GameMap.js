@@ -1,4 +1,5 @@
 let coinsBoolean=true;
+let i = 0;
 class GameMap {
   /**
    * @constructor
@@ -28,12 +29,12 @@ class GameMap {
     this.doors.draw();
     this.floors.draw();
     this.items.draw();
+    this.decoration.draw();
     if (coinsBoolean==true){ //every time that we change map this var has to be true!
       this.coins.draw();
     }else{
         this.coins.remove();
     }
-    this.decoration.draw();
   }
 
   /**
@@ -76,6 +77,8 @@ class GameMap {
             this.floors.add(tile.sprite);
           }
         }
+
+        i++;
       }
     }
   }
@@ -106,7 +109,6 @@ class GameMap {
         if (tile.name.startsWith("coin")) {
             this.coins.add(tile.sprite);
         }
-
         switch (isInteractive) {
           case 'y': // interractive item
             this.items.add(tile.sprite);
@@ -115,6 +117,7 @@ class GameMap {
             this.decoration.add(tile.sprite);
             break;
         }
+        i++;
 
       }
     }

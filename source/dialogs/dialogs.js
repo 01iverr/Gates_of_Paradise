@@ -1,35 +1,30 @@
 class Dialogs {
   constructor() {
-    var petros = new p5.Speech(); // speech synthesis object
-    var player = new p5.Speech();
-    var devil = new p5.Speech();
-    var informer = new p5.Speech();
-    player.setVoice("Google UK English Female");
-    player.setLang("en-GB");
-    petros.setVoice("Google US English");
-    petros.setLang("en-US");
-    devil.setVoice("Microsoft David Desktop - English (United States)");
-    informer.setVoice("Microsoft Zira Desktop - English (United States)")
-  }
-
-  setup() {
-    this.dset = loadJSON("dialogset.json");
-    noLoop();
+    this.petros = new p5.Speech(); // speech synthesis object
+    this.player = new p5.Speech();
+    this.devil = new p5.Speech();
+    this.informer = new p5.Speech();
+    this.player.setVoice("Google UK English Female");
+    this.player.setLang("en-GB");
+    this.petros.setVoice("Google US English");
+    this.petros.setLang("en-US");
+    this.devil.setVoice("Microsoft David Desktop - English (United States)");
+    this.informer.setVoice("Microsoft Zira Desktop - English (United States)")
   }
 
   tell(talker, text) {
     if (talker == "devil") {
-      devil.speak(dialogs_info[text]);
-      text(dialogs_info[text], 10, 30);
+      this.devil.speak(dialogs_info[text]);
+      // text(dialogs_info[text], 10, 30);
     } else if (talker == "petros") {
-      petros.speak(dialogs_info[text]);
-      text(dialogs_info[text], 10, 30);
+      this.petros.speak(dialogs_info[text]);
+      // text(dialogs_info[text], 10, 30);
     } else if (talker == "player") {
-      player.speak(dialogs_info[text]);
-      text(dialogs_info[text], 10, 30);
+      this.player.speak(dialogs_info[text]);
+      // text(dialogs_info[text], 10, 30);
     } else if (talker == "informer") {
-      informer.speak(dialogs_info[text]);
-      text(dialogs_info[text], 10, 30);
+      this.petros.speak(dialogs_info[text]);
+      // text(dialogs_info[text], 10, 30);
     }
   }
 
