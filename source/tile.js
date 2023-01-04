@@ -33,11 +33,6 @@ class Tile {
         this.addCollisions();
         this.addAnimation();
         this.sprite.changeAnimation("first");
-
-        // FOR TESTING (to view some animations) // TODO: remove
-        if ((this.name.startsWith("door") && !this.name.startsWith("door_paradise") && !this.name.startsWith("door_hell")) || this.name.startsWith("bed") || this.name.startsWith("suitcase") || this.name.startsWith("chest")){
-            this.sprite.changeAnimation("animation");
-        }
     }
 
     /**

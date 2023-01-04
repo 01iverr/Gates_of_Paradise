@@ -9,44 +9,18 @@ var itemfound;
 var touchedclue;
 // Map, each name corresponds to map number
 // (corresponds to numbers in level-data.json)
-const stage_names = [{
-    key: "orange",
-    value: 1
-  }, // orange room
-  {
-    key: "red",
-    value: 2
-  }, // red room
-  {
-    key: "purple",
-    value: 3
-  }, // purple room
-  {
-    key: "blue",
-    value: 4
-  }, // blue room
-  {
-    key: "green",
-    value: 5
-  }, // green room
-  {
-    key: "yellow",
-    value: 6
-  }, // yellow room
-  {
-    key: "gates_1",
-    value: 7
-  }, // first scene, with both gates
-  {
-    key: "doors_corridor",
-    value: 8
-  }, // corridor with colored doors
-  {
-    key: "gates_2",
-    value: 9
-  } // last scene, with both gates
-];
-var numberOfLevels = stage_names.length;
+const stage_names = {
+    "orange"         : 1,
+    "red"            : 2,
+    "purple"         : 3,
+    "blue"           : 4,
+    "green"          : 5,
+    "yellow"         : 6,
+    "gates_1"        : 7, // first scene, with both gates
+    "doors_corridor" : 8, // corridor with colored doors
+    "gates_2"        : 9  // last scene, with both gates
+}
+var numberOfLevels = Object.keys(stage_names).length;
 var level_info;
 
 var tileset;
@@ -75,15 +49,22 @@ var map_data;
 var item_data;
 var tempMap;
 
-var stage = 7;
-var changeStage = true;
+var stage = 0;
+var changeStage = false;
+var gameMap;
 
 var interract_blocks = []; // interractive blocks for each map
+
+var speter_img; // saint peter image
+var devil_img;  // devil image
+
+var intro_screen_img; // image for intro screen (stage 0)
 
 /**
  * Preload asset files.
  */
 function preload() {
+  intro_screen_img = loadImage('/assets/images/backgrounds/intro.png');
   tileset = loadImage('/assets/images/map tiles/tiles-' + tileset_row_blocks + '-' + tileset_col_blocks + '-200.png');
   tile_info = loadJSON('/assets/images/map tiles/tileset.json');
   itemset = loadImage('/assets/images/map tiles/items-' + itemset_row_blocks + '-' + itemset_col_blocks + '-200.png');
@@ -91,6 +72,8 @@ function preload() {
   level_info = loadJSON('/assets/level-data.json');
   playerset = loadImage('/assets/images/characters/ghost.png');
   dialogs_info = loadJSON('/assets/dialogsset.json');
+  speter_img = loadImage('/assets/images/characters/speter.png');
+  devil_img = loadImage('/assets/images/characters/devil.png');
 }
 
 /**
@@ -120,6 +103,18 @@ function setup() {
  * Create each map based on asset files.
  */
 function createMaps() {
+  // for stage 0
+  let map = new Array(canvasheight/tilewidth);
+  let items = new Array(canvasheight/tilewidth);
+  for (let i=0; i<canvasheight/tilewidth; i++){
+    map[i] = new Array(canvaswidth/tilewidth).fill(61);
+    items[i] = new Array(canvaswidth/tilewidth).fill(1);
+  }
+  tempMap = new GameMap(0, map, items);
+  tempMap.create();
+  maps[0] = tempMap
+
+  // for the rest stages
   for (let i = 1; i <= numberOfLevels; i++) {
     tempMap = new GameMap(i, level_info[`map_${i}`], level_info[`items_${i}`]);
     tempMap.create();
@@ -128,7 +123,22 @@ function createMaps() {
 }
 
 function draw() {
-  background(255, 0, 0);
+  background(0, 0, 0);
+  if (stage == 0) {
+    image(intro_screen_img, 0, 0);
+    gameMap = maps[stage];
+    gameMap.draw();
+
+    if (kb.pressing("x")) {
+        changeStage = true;
+    }
+
+    if (changeStage) {
+        stage = stage_names["gates_1"];
+    }
+    return;
+  }
+  
   //TODO ADD DIALOGS and set the global var as true to draw the icons
   if (changeStage) {
     changeStage = false;
@@ -149,7 +159,7 @@ function draw() {
     } else if (stage == 6) { //living room
       calltStage(4, 4, 17, 18);
     }
-}
+  }
     canIHelp();
     enterTheRoom();
     leaveTheRoom();
