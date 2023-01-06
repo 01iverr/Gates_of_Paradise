@@ -7,18 +7,22 @@ var dialogsplayer;
 var doorsopened;
 var itemfound;
 var touchedclue;
+var devil;
+var devilspoke;
+var playerspoke;
+var next;
 // Map, each name corresponds to map number
 // (corresponds to numbers in level-data.json)
 const stage_names = {
-    "orange"         : 1,
-    "red"            : 2,
-    "purple"         : 3,
-    "blue"           : 4,
-    "green"          : 5,
-    "yellow"         : 6,
-    "gates_1"        : 7, // first scene, with both gates
-    "doors_corridor" : 8, // corridor with colored doors
-    "gates_2"        : 9  // last scene, with both gates
+  "orange": 1,
+  "red": 2,
+  "purple": 3,
+  "blue": 4,
+  "green": 5,
+  "yellow": 6,
+  "gates_1": 7, // first scene, with both gates
+  "doors_corridor": 8, // corridor with colored doors
+  "gates_2": 9 // last scene, with both gates
 }
 var numberOfLevels = Object.keys(stage_names).length;
 var level_info;
@@ -54,9 +58,10 @@ var changeStage = false;
 var gameMap;
 
 var interract_blocks = []; // interractive blocks for each map
+var items_names;
 
 var speter_img; // saint peter image
-var devil_img;  // devil image
+var devil_img; // devil image
 
 var intro_screen_img; // image for intro screen (stage 0)
 
@@ -88,11 +93,15 @@ function setup() {
   cnv.position(x, y);
   playerone = new Player(100, 300, 1);
   dialogsplayer = new Dialogs();
-
+  devil = true;
+  next = false;
+  devilspoke = false;
+  playerspoke=false;
   doorsopened = [false, false, false, false, false, false, false];
   itemfound = [false, false, false, false, false, false, false, false];
   playerOut = false;
   touchedclue = [false, false, false, false, false, false, false, false];
+  items_names = ["fridge", "bed", "chest", "t_paper", "suitcase", "book_leaves", "chair_purple", "desk_purple"]
   //items in touched clue : 0:fridge 1:bed 2:chest 3:toiletpaper 4:suitcase 5:book_leaves 6:chair 7:desk
   cantchangerooms = true;
   // Create Maps
@@ -104,11 +113,11 @@ function setup() {
  */
 function createMaps() {
   // for stage 0
-  let map = new Array(canvasheight/tilewidth);
-  let items = new Array(canvasheight/tilewidth);
-  for (let i=0; i<canvasheight/tilewidth; i++){
-    map[i] = new Array(canvaswidth/tilewidth).fill(61);
-    items[i] = new Array(canvaswidth/tilewidth).fill(1);
+  let map = new Array(canvasheight / tilewidth);
+  let items = new Array(canvasheight / tilewidth);
+  for (let i = 0; i < canvasheight / tilewidth; i++) {
+    map[i] = new Array(canvaswidth / tilewidth).fill(61);
+    items[i] = new Array(canvaswidth / tilewidth).fill(1);
   }
   tempMap = new GameMap(0, map, items);
   tempMap.create();
@@ -130,15 +139,15 @@ function draw() {
     gameMap.draw();
 
     if (kb.pressing("x")) {
-        changeStage = true;
+      changeStage = true;
     }
 
     if (changeStage) {
-        stage = stage_names["gates_1"];
+      stage = stage_names["gates_1"];
     }
     return;
   }
-  
+
   //TODO ADD DIALOGS and set the global var as true to draw the icons
   if (changeStage) {
     changeStage = false;
@@ -155,27 +164,79 @@ function draw() {
     } else if (stage == 4) { //wc
       calltStage(3, 3, 15, 16);
     } else if (stage == 5) { //garden
-      calltStage(5, 5, 19, 20);
+      if (devil) {
+        talkWithTheDevil();
+      }
+      if (next) {
+        calltStage(5, 5, 19, 20);
+      }
+
     } else if (stage == 6) { //living room
       calltStage(4, 4, 17, 18);
     }
   }
+  if (stage != 0 && stage != 7 && stage != 8) {
+    needHint();
     canIHelp();
-    enterTheRoom();
-    leaveTheRoom();
-
-    gameMap = maps[stage];
-    gameMap.draw();
-    playerone.draw();
-    playerone.update();
-
   }
+  enterTheRoom();
+  leaveTheRoom();
 
-function canIHelp(){
+  gameMap = maps[stage];
+  gameMap.draw();
+  playerone.draw();
+  playerone.update();
+
+}
+
+function needHint() {
+  if (kb.released("g")) {
+    changeStage = false;
+    cantchangerooms = true;
+    playerone.sprite.changeAnimation("pray");
+    dialogsplayer.tell("player", 35);
+    setTimeout(() => {
+      cantchangerooms = false;
+    }, "5000");
+    if (itemfound[6]) {
+      cantchangerooms = true;
+      dialogsplayer.tell("petros", 46);
+      setTimeout(() => {
+        changeStage = true;
+        cantchangerooms = false;
+      }, "5000");
+    }
+    for (let i = 0; i < 7; i++) {
+      num = 36 + i;
+      if (!itemfound[i]) {
+        if (playerone.doIhaveCoins()) {
+          //TODO tell the right hint
+          cantchangerooms = true;
+          dialogsplayer.tell("petros", num);
+          setTimeout(() => {
+            playerone.removeOneCoin();
+            changeStage = true;
+            cantchangerooms = false;
+          }, "5000");
+        } else {
+          cantchangerooms = true;
+          dialogsplayer.tell("petros", 45);
+          setTimeout(() => {
+            changeStage = true;
+            cantchangerooms = false;
+          }, "5000");
+        }
+        return;
+      }
+    }
+  }
+}
+
+function canIHelp() {
   if (kb.released("f")) {
     changeStage = false;
     cantchangerooms = true;
-    dialogsplayer.tell("petros", 44);
+    dialogsplayer.tell("petros", 31);
     setTimeout(() => {
       changeStage = true;
       cantchangerooms = false;
@@ -183,168 +244,271 @@ function canIHelp(){
   }
 }
 
-  function enterTheRoom() {
-    ////////////////Enter the rooms
-    if (stage == 8 && !cantchangerooms) {
-      if (playerone.checkPosition(124, 164, 0, 110)) {
-        stage = 2;
+function talkWithTheDevil() {
+  changeStage = false;
+  if (!playerspoke){
+    cantchangerooms = true;
+    dialogsplayer.tell("devil", 30);
+    dialogsplayer.tell("player", 29);
+    setTimeout(() => {
+      devilspoke = true;
+      changeStage = true;
+      playerspoke=true;
+    }, "6000");
+  }
+  if (!devilspoke) {
+    cantchangerooms = true;
+    dialogsplayer.tell("devil", 31);
+    setTimeout(() => {
+      devilspoke = true;
+      changeStage = true;
+    }, "15000");
+  }
+  if (devilspoke) {
+    changeStage = true;
+    if (kb.released("1") || kb.released("3")) {
+      changeStage = false;
+      dialogsplayer.tell("devil", 34);
+      console.log("-------------1/3----------------")
+      setTimeout(() => {
+        console.log("-------------1/3--------------mesa--")
+        playerone.takeallthecoins();
+        changeStage = true;
+        cantchangerooms = false;
+        next = true;
+        devil = false;
+      }, "3000");
+    } else if (kb.released("2")) {
+      changeStage = false;
+      console.log("-------------2----------------")
+      dialogsplayer.tell("devil", 32);
+      setTimeout(() => {
+        console.log("-------------2-------------mesaa---")
+        changeStage = true;
+        cantchangerooms = false;
+        next = true;
+        devil = false;
+      }, "3000");
+    } else if (kb.released("4")) {
+      changeStage = false;
+      console.log("------------4----------------")
+      dialogsplayer.tell("player", 47);
+      setTimeout(() => {
+        console.log("-------------4---------------mesa-")
+        devilspoke = false;
+        return talkWithTheDevil();
+      }, "2000");
+    }
+  }
+}
+
+function enterTheRoom() {
+  ////////////////Enter the rooms
+  if (stage == 8 && !cantchangerooms) {
+    if (playerone.checkPosition(124, 164, 0, 110)) {
+      stage = 2;
+      coinsBoolean = true;
+      changeStage = true;
+      playerone.setPosition(240, 340);
+
+    } else if (playerone.checkPosition(204, 228, 0, 110)) {
+      if (itemfound[0]) {
+        stage = 1;
         coinsBoolean = true;
         changeStage = true;
         playerone.setPosition(240, 340);
-
-      } else if (playerone.checkPosition(204, 228, 0, 110)) {
-        if (itemfound[0]) {
-          stage = 1;
-          coinsBoolean = true;
-          changeStage = true;
-          playerone.setPosition(240, 340);
-        }
-      } else if (playerone.checkPosition(268, 284, 0, 110)) {
-        if (itemfound[2]) {
-          stage = 4;
-          coinsBoolean = true;
-          changeStage = true;
-          playerone.setPosition(240, 340);
-        }
-      } else if (playerone.checkPosition(332, 348, 0, 110)) {
-        if (itemfound[3]) {
-          stage = 6;
-          coinsBoolean = true;
-          changeStage = true;
-          playerone.setPosition(240, 340);
-        }
-
-      } else if (playerone.checkPosition(396, 420, 0, 110)) {
-        if (itemfound[4]) {
-          stage = 5;
-          coinsBoolean = true;
-          changeStage = true;
-          playerone.setPosition(240, 340);
-        }
-      } else if (playerone.checkPosition(452, 484, 0, 110)) {
-        if (itemfound[5]) {
-          stage = 3;
-          coinsBoolean = true;
-          changeStage = true;
-          playerone.setPosition(240, 340);
-        }
       }
-    }
-  }
-
-  function leaveTheRoom() {
-    //LEAVE THE ROOMs
-    if (stage != 8 && stage != 7 && stage != 9 && !cantchangerooms) {
-      if (playerone.checkPosition(200, 260, 370, 420)) {
-        if (stage == 1) {
-          playerone.setPosition(220, 110);
-        } else if (stage == 2) {
-          playerone.setPosition(140, 110);
-        } else if (stage == 3) {
-          playerone.setPosition(460, 110);
-        } else if (stage == 4) {
-          playerone.setPosition(270, 110);
-        } else if (stage == 5) {
-          playerone.setPosition(400, 110);
-        } else if (stage == 6) {
-          playerone.setPosition(340, 110);
-        }
-        stage = 8;
+    } else if (playerone.checkPosition(268, 284, 0, 110)) {
+      if (itemfound[2]) {
+        stage = 4;
+        coinsBoolean = true;
         changeStage = true;
+        playerone.setPosition(240, 340);
+      }
+    } else if (playerone.checkPosition(332, 348, 0, 110)) {
+      if (itemfound[3]) {
+        stage = 6;
+        coinsBoolean = true;
+        changeStage = true;
+        playerone.setPosition(240, 340);
+      }
+
+    } else if (playerone.checkPosition(396, 420, 0, 110)) {
+      if (itemfound[4]) {
+        stage = 5;
+        coinsBoolean = true;
+        changeStage = true;
+        playerone.setPosition(240, 340);
+      }
+    } else if (playerone.checkPosition(452, 484, 0, 110)) {
+      if (itemfound[5]) {
+        stage = 3;
+        coinsBoolean = true;
+        changeStage = true;
+        playerone.setPosition(240, 340);
       }
     }
   }
+}
 
-
-  function entryStage() {
-    dialogsplayer.tell("petros", 1);
-    dialogsplayer.tell("player", 2);
-    dialogsplayer.tell("petros", 3);
-    setTimeout(() => {
+function leaveTheRoom() {
+  //LEAVE THE ROOMs
+  if (stage != 8 && stage != 7 && stage != 9 && !cantchangerooms) {
+    if (playerone.checkPosition(200, 260, 370, 420)) {
+      if (stage == 1) {
+        playerone.setPosition(220, 110);
+      } else if (stage == 2) {
+        playerone.setPosition(140, 110);
+      } else if (stage == 3) {
+        playerone.setPosition(460, 110);
+      } else if (stage == 4) {
+        playerone.setPosition(270, 110);
+      } else if (stage == 5) {
+        playerone.setPosition(400, 110);
+      } else if (stage == 6) {
+        playerone.setPosition(340, 110);
+      }
       stage = 8;
       changeStage = true;
+    }
+  }
+}
+
+
+function entryStage() {
+  dialogsplayer.tell("petros", 1);
+  dialogsplayer.tell("player", 2);
+  dialogsplayer.tell("petros", 3);
+  setTimeout(() => {
+    stage = 8;
+    changeStage = true;
+  }, "30000");
+}
+
+function doorsStage() {
+  if (!doorsopened[0]) {
+    doorsopened[0] = true;
+    cantchangerooms = true;
+    dialogsplayer.tell("petros", 4);
+    dialogsplayer.tell("player", 5);
+    dialogsplayer.tell("petros", 6);
+    setTimeout(() => {
+      cantchangerooms = false;
     }, "30000");
   }
+}
 
-  function doorsStage() {
-    if (!doorsopened[0]) {
-      doorsopened[0] = true;
+function callDoubleClueStage(doornum, cluenum, dialog1, dialog2, cluenum2, dialog3) {
+  if (!doorsopened[doornum]) {
+    doorsopened[doornum] = true;
+    cantchangerooms = true;
+    dialogsplayer.tell("informer", dialog1);
+    setTimeout(() => {
+      cantchangerooms = false;
+      changeStage = true;
+    }, "7000");
+  }
+
+  if (!itemfound[cluenum]) {
+    if (touchedclue[cluenum] && (kb.released('e'))) {
+      // change item animation
+      let itemName=items_names[cluenum];
+      let item;
+      for (i of interract_blocks[stage]){
+        console.log(i.name);
+        if (i.name.startsWith(itemName)){
+          item = i;
+        }
+      }
+      item.sprite.changeAnimation("animation");
+
       cantchangerooms = true;
-      dialogsplayer.tell("petros", 4);
-      dialogsplayer.tell("player", 5);
-      dialogsplayer.tell("petros", 6);
+      dialogsplayer.tell("petros", dialog2);
       setTimeout(() => {
+        //player found the key.
         cantchangerooms = false;
-      }, "30000");
+        itemfound[cluenum] = true;
+        changeStage = true;
+      }, "6000");
+    } else {
+      changeStage = true;
     }
   }
 
-  function callDoubleClueStage(doornum, cluenum, dialog1, dialog2, cluenum2, dialog3) {
-    if (!doorsopened[doornum]) {
-      doorsopened[doornum] = true;
+  if (itemfound[cluenum] && !itemfound[cluenum2]) {
+    if (touchedclue[cluenum2] && (kb.released('e'))) {
+      // change item animation
+      let itemName=items_names[cluenum2];
+      let item;
+      for (i of interract_blocks[stage]){
+        console.log(i.name);
+        if (i.name.startsWith(itemName)){
+          item = i;
+        }
+      }
+      item.sprite.changeAnimation("animation");
+
       cantchangerooms = true;
-      dialogsplayer.tell("informer", dialog1);
+      dialogsplayer.tell("petros", dialog3);
       setTimeout(() => {
+        //player found the key.
         cantchangerooms = false;
+        itemfound[cluenum2] = true;
         changeStage = true;
-      }, "7000");
-    }
-
-    if (!itemfound[cluenum]) {
-      if (touchedclue[cluenum] && (kb.released('e'))) {
-        cantchangerooms = true;
-        dialogsplayer.tell("petros", dialog2);
-        setTimeout(() => {
-          //player found the key.
-          cantchangerooms = false;
-          itemfound[cluenum] = true;
-          changeStage = true;
-        }, "6000");
-      } else {
-        changeStage = true;
-      }
-    }
-
-    if (itemfound[cluenum] && !itemfound[cluenum2]) {
-      if (touchedclue[cluenum2] && (kb.released('e'))) {
-        cantchangerooms = true;
-        dialogsplayer.tell("petros", dialog3);
-        setTimeout(() => {
-          //player found the key.
-          cantchangerooms = false;
-          itemfound[cluenum2] = true;
-          changeStage = true;
-        }, "6000");
-      } else {
-        changeStage = true;
-      }
+      }, "6000");
+    } else {
+      changeStage = true;
     }
   }
+}
 
 
-  function calltStage(doornum, cluenum, dialog1, dialog2) {
-    if (!doorsopened[doornum]) {
-      doorsopened[doornum] = true;
-      cantchangerooms = true;
-      dialogsplayer.tell("informer", dialog1);
-      setTimeout(() => {
-        cantchangerooms = false;
-        changeStage = true;
-      }, "7000");
-    }
+function calltStage(doornum, cluenum, dialog1, dialog2) {
+  if (!doorsopened[doornum]) {
+    doorsopened[doornum] = true;
+    cantchangerooms = true;
+    dialogsplayer.tell("informer", dialog1);
+    setTimeout(() => {
+      cantchangerooms = false;
+      changeStage = true;
+    }, "7000");
+  }
 
-    if (!itemfound[cluenum]) {
-      if (touchedclue[cluenum] && (kb.released('e'))) {
-        cantchangerooms = true;
-        dialogsplayer.tell("petros", dialog2);
-        setTimeout(() => {
-          //player found the key.
-          cantchangerooms = false;
-          itemfound[cluenum] = true;
-          changeStage = true;
-        }, "6000");
-      } else {
-        changeStage = true;
+  if (!itemfound[cluenum]) {
+    if (touchedclue[cluenum] && (kb.released('e'))) {
+
+      // change item animation
+      let itemName=items_names[cluenum];
+      let item;
+      for (i of interract_blocks[stage]){
+        console.log(i.name);
+        if (i.name.startsWith(itemName)){
+          item = i;
+        }
       }
+      item.sprite.changeAnimation("animation");
+
+      cantchangerooms = true;
+      dialogsplayer.tell("petros", dialog2);
+      setTimeout(() => {
+        //player found the key.
+        cantchangerooms = false;
+        itemfound[cluenum] = true;
+        changeStage = true;
+      }, "6000");
+    } else {
+      changeStage = true;
     }
   }
+}
+
+// function getItem(name){
+//   console.log("666 >:(")
+//   console.log(interract_blocks);
+//   console.log(stage);
+//   for (i of interract_blocks[stage]){
+//     if (i.name == name){
+//       return item;
+//     }
+//   }
+// }

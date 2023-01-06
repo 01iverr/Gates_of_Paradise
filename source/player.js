@@ -110,6 +110,20 @@ class Player {
     this.coins = 0;
   }
 
+
+  doIhaveCoins(){
+    if (this.coins>0){
+      console.log("----------------------------------------")
+      console.log(this.coins)
+      console.log("----------------------------------------")
+      return true;
+    }
+    return false;
+  }
+
+  removeOneCoin(){
+    this.coins=this.coins-1;
+  }
   draw() {
     this.sprite.draw();
   }
@@ -206,7 +220,7 @@ class Player {
     this.sprite.addAnimation("walking_left",
       frames[1][0], frames[1][1], frames[1][2]);
     this.sprite.addAnimation("pray",
-      frames[2][0], frames[2][1], frames[2][2]);
+      frames[2][0], frames[2][1], frames[2][2]).noLoop();
     this.sprite.addAnimation("praying",
       frames[3][0], frames[3][1], frames[3][2]);
   }
