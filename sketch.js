@@ -34,7 +34,7 @@ var tile_info;
 
 var itemset;
 var itemset_row_blocks = 6;
-var itemset_col_blocks = 34;
+var itemset_col_blocks = 37;
 var item_info;
 
 var playerset;
@@ -411,17 +411,7 @@ function callDoubleClueStage(doornum, cluenum, dialog1, dialog2, cluenum2, dialo
 
   if (!itemfound[cluenum]) {
     if (touchedclue[cluenum] && (kb.released('e'))) {
-      // change item animation
-      let itemName=items_names[cluenum];
-      let item;
-      for (i of interract_blocks[stage]){
-        console.log(i.name);
-        if (i.name.startsWith(itemName)){
-          item = i;
-        }
-      }
-      item.sprite.changeAnimation("animation");
-
+      animateItem(cluenum);
       cantchangerooms = true;
       dialogsplayer.tell("petros", dialog2);
       setTimeout(() => {
@@ -437,17 +427,7 @@ function callDoubleClueStage(doornum, cluenum, dialog1, dialog2, cluenum2, dialo
 
   if (itemfound[cluenum] && !itemfound[cluenum2]) {
     if (touchedclue[cluenum2] && (kb.released('e'))) {
-      // change item animation
-      let itemName=items_names[cluenum2];
-      let item;
-      for (i of interract_blocks[stage]){
-        console.log(i.name);
-        if (i.name.startsWith(itemName)){
-          item = i;
-        }
-      }
-      item.sprite.changeAnimation("animation");
-
+      animateItem(cluenum2);
       cantchangerooms = true;
       dialogsplayer.tell("petros", dialog3);
       setTimeout(() => {
@@ -476,18 +456,7 @@ function calltStage(doornum, cluenum, dialog1, dialog2) {
 
   if (!itemfound[cluenum]) {
     if (touchedclue[cluenum] && (kb.released('e'))) {
-
-      // change item animation
-      let itemName=items_names[cluenum];
-      let item;
-      for (i of interract_blocks[stage]){
-        console.log(i.name);
-        if (i.name.startsWith(itemName)){
-          item = i;
-        }
-      }
-      item.sprite.changeAnimation("animation");
-
+      animateItem(cluenum);
       cantchangerooms = true;
       dialogsplayer.tell("petros", dialog2);
       setTimeout(() => {
@@ -502,13 +471,18 @@ function calltStage(doornum, cluenum, dialog1, dialog2) {
   }
 }
 
-// function getItem(name){
-//   console.log("666 >:(")
-//   console.log(interract_blocks);
-//   console.log(stage);
-//   for (i of interract_blocks[stage]){
-//     if (i.name == name){
-//       return item;
-//     }
-//   }
-// }
+/**
+ * Animate clue item. To be called when player interracts with item.
+ * @param {number} cluenum number of clue to be animated
+ */
+function animateItem(cluenum){
+    let itemName=items_names[cluenum];
+    let item;
+    for (i of interract_blocks[stage]){
+        console.log(i.name);
+        if (i.name.startsWith(itemName)){
+            item = i;
+        }
+    }
+    item.sprite.changeAnimation("animation");
+}

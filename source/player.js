@@ -93,12 +93,12 @@ class Player {
   checkPosition(x1, x2, y1, y2) {
     if (this.sprite.position.x >= x1 && this.sprite.position.x <= x2 &&
       this.sprite.position.y >= y1 && this.sprite.position.y <= y2) {
-      console.log("BOOOO");
+    //   console.log("BOOOO");
       return true;
     }
-    console.log("BOOOOOOOOOOOOOOOBOOOOOOOOOOOOOOO")
-    console.log(this.sprite.position.x);
-    console.log(this.sprite.position.y);
+    // console.log("BOOOOOOOOOOOOOOOBOOOOOOOOOOOOOOO")
+    // console.log(this.sprite.position.x);
+    // console.log(this.sprite.position.y);
     return false;
   }
 
@@ -255,7 +255,7 @@ class Player {
 
   findTheClue(i, index, name) {
     if (!itemfound[index]) {
-      console.log(interract_blocks[stage][i]);
+    //   console.log(interract_blocks[stage][i]);
       if (interract_blocks[stage][i].name.startsWith(name)) {
         touchedclue[index] = true;
       } else {
