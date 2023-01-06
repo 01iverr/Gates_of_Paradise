@@ -9,7 +9,6 @@ class Player {
     this.height = 2;
     this.sprite = createSprite(this.x, this.y, 2 * tilewidth, 2 * tilewidth);
     this.sprite.collider = 'static';
-    this.coins = 0;
     this.addAnimation();
     this.changeAnimation("walking_right");
   }
@@ -55,7 +54,7 @@ class Player {
 
         if (interract_blocks[stage][i].name.startsWith("coin")) { // coin
           // Add coin
-          this.coins += 1;
+          this.addOneCoin();
           coinsBoolean = false;
 
         } else { // not coin
@@ -63,7 +62,7 @@ class Player {
           this.sprite.position.x = oldx;
         }
 
-        //find the clue ifn the fridge
+        //find the clue in the fridge
         this.findTheClue(i, 0, "fridge");
         //find the clue on the bed
         this.findTheClue(i, 1, "bed");
@@ -93,12 +92,8 @@ class Player {
   checkPosition(x1, x2, y1, y2) {
     if (this.sprite.position.x >= x1 && this.sprite.position.x <= x2 &&
       this.sprite.position.y >= y1 && this.sprite.position.y <= y2) {
-    //   console.log("BOOOO");
       return true;
     }
-    // console.log("BOOOOOOOOOOOOOOOBOOOOOOOOOOOOOOO")
-    // console.log(this.sprite.position.x);
-    // console.log(this.sprite.position.y);
     return false;
   }
 
@@ -106,24 +101,50 @@ class Player {
     this.sprite.position.x = x;
     this.sprite.position.y = y;
   }
-  takeallthecoins() {
-    this.coins = 0;
-  }
-
 
   doIhaveCoins(){
-    if (this.coins>0){
-      console.log("----------------------------------------")
-      console.log(this.coins)
-      console.log("----------------------------------------")
+    if (this.countCoins()>0){
+      this.removeOneCoin();
       return true;
     }
     return false;
   }
 
-  removeOneCoin(){
-    this.coins=this.coins-1;
+
+  takeallthecoins() {
+    for (let temp=0;temp<6;temp++){
+      if (coinspicked[temp] && !coinsused[temp]){
+         coinsused[temp]=true;
+      }
+    }
+ }
+
+  countCoins(){
+    let countedUnusedCoins=0;
+     for (let temp=0;temp<6;temp++){
+       if (coinspicked[temp] && !coinsused[temp]){
+          countedUnusedCoins= countedUnusedCoins+1;
+       }
+     }
+     return  countedUnusedCoins;
   }
+
+  addOneCoin(){
+    let temp=stage-1;
+    if (!coinspicked[temp]){
+      coinspicked[temp]=true;
+    }
+  }
+
+  removeOneCoin(){
+    for (let temp=0;temp<6;temp++){
+      if (coinspicked[temp] && !coinsused[temp]){
+         coinsused[temp]=true;
+         return;
+      }
+    }
+ }
+
   draw() {
     this.sprite.draw();
   }
@@ -255,7 +276,6 @@ class Player {
 
   findTheClue(i, index, name) {
     if (!itemfound[index]) {
-    //   console.log(interract_blocks[stage][i]);
       if (interract_blocks[stage][i].name.startsWith(name)) {
         touchedclue[index] = true;
       } else {

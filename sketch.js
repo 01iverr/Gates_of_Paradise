@@ -11,6 +11,8 @@ var devil;
 var devilspoke;
 var playerspoke;
 var next;
+var coinspicked;
+var coinsused;
 // Map, each name corresponds to map number
 // (corresponds to numbers in level-data.json)
 const stage_names = {
@@ -104,6 +106,8 @@ function setup() {
   items_names = ["fridge", "bed", "chest", "t_paper", "suitcase", "book_leaves", "chair_purple", "desk_purple"]
   //items in touched clue : 0:fridge 1:bed 2:chest 3:toiletpaper 4:suitcase 5:book_leaves 6:chair 7:desk
   cantchangerooms = true;
+  coinspicked=[false, false, false, false, false, false]
+  coinsused=[false, false, false, false, false, false]
   // Create Maps
   createMaps();
 }
@@ -214,7 +218,6 @@ function needHint() {
           cantchangerooms = true;
           dialogsplayer.tell("petros", num);
           setTimeout(() => {
-            playerone.removeOneCoin();
             changeStage = true;
             cantchangerooms = false;
           }, "5000");
@@ -269,9 +272,7 @@ function talkWithTheDevil() {
     if (kb.released("1") || kb.released("3")) {
       changeStage = false;
       dialogsplayer.tell("devil", 34);
-      console.log("-------------1/3----------------")
       setTimeout(() => {
-        console.log("-------------1/3--------------mesa--")
         playerone.takeallthecoins();
         changeStage = true;
         cantchangerooms = false;
@@ -280,10 +281,8 @@ function talkWithTheDevil() {
       }, "3000");
     } else if (kb.released("2")) {
       changeStage = false;
-      console.log("-------------2----------------")
       dialogsplayer.tell("devil", 32);
       setTimeout(() => {
-        console.log("-------------2-------------mesaa---")
         changeStage = true;
         cantchangerooms = false;
         next = true;
@@ -291,10 +290,8 @@ function talkWithTheDevil() {
       }, "3000");
     } else if (kb.released("4")) {
       changeStage = false;
-      console.log("------------4----------------")
       dialogsplayer.tell("player", 47);
       setTimeout(() => {
-        console.log("-------------4---------------mesa-")
         devilspoke = false;
         return talkWithTheDevil();
       }, "2000");
@@ -479,7 +476,6 @@ function animateItem(cluenum){
     let itemName=items_names[cluenum];
     let item;
     for (i of interract_blocks[stage]){
-        console.log(i.name);
         if (i.name.startsWith(itemName)){
             item = i;
         }
