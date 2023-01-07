@@ -1,5 +1,4 @@
 let coinsBoolean=true;
-let i = 0;
 class GameMap {
   /**
    * @constructor
@@ -77,8 +76,6 @@ class GameMap {
             this.floors.add(tile.sprite);
           }
         }
-
-        i++;
       }
     }
   }
@@ -117,8 +114,6 @@ class GameMap {
             this.decoration.add(tile.sprite);
             break;
         }
-        i++;
-
       }
     }
   }
