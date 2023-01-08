@@ -1,6 +1,8 @@
 <h1 align="center">Gates of Paradise</h1>
 
-<p align="right">Gates of Paradise is a treasure hunt game created with p5.js</p>
+<p align="right">Gates of Paradise is a treasure hunt game created with p5.js <br>
+Playthrough of the game: <a href="https://drive.google.com/file/d/1b4o0EPTy9HA3FnH72lZ4kQD9FSkuJr4Q/view?usp=sharing"> here!</a>
+</p>
 
 <h2>More about this game:</h2>
 
