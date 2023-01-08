@@ -239,7 +239,7 @@ function canIHelp() {
   if (kb.released("f")) {
     changeStage = false;
     cantchangerooms = true;
-    dialogsplayer.tell("petros", 31);
+    dialogsplayer.tell("petros", 44);
     setTimeout(() => {
       changeStage = true;
       cantchangerooms = false;

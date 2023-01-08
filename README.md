@@ -8,7 +8,7 @@
 You are a ghost! Peter knows he has to help you get to heaven<B> BUT </B>  He lost his keys. <br>
 And you are the one who must help him find another way to unlock Paradise. <br>
 Peter will take you to his apartment and give you some rhymed clues to find some items.  <br>
-You have to be careful and not let the devil scare you or take your money! Your money will help you find difficult clues that you can not alone.  <br>
+You have to be careful and not let the devil scare you or take your money! Your money will help you find difficult clues that you cannot alone.  <br>
 If you are good enough and manage to unlock Paradise, Peter will keep his job and you will go to Heaven!  <br>
 </p>
 
